@@ -25,6 +25,7 @@ app.get('/', (request, response) => {
 
 app.get('/api/notes', (request, response) => {
   response.json(notes)
+  console.log("typeof notes",typeof notes)
 })
 
 const PORT = 3001
