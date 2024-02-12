@@ -20,7 +20,8 @@ let notes = [
 ]
 
 app.get('/', (request, response) => {
-  response.send('<h1>Hello World!</h1>')
+  const notes2 = notes.map(note => note.content)
+  response.send(`${notes2}`)
 })
 
 app.get('/api/notes/:id', (request, response) => {
@@ -33,8 +34,16 @@ app.get('/api/notes/:id', (request, response) => {
   if (note) {
     response.json(note)
   } else {
+    response.statusMessage = "The following resources is not found"
     response.status(404).end()
   }
+})
+
+app.delete('/api/notes/:id', (request, response) => {
+  const id = Number(request.params.id)
+  notes = notes.filter(note => note.id !== id)
+
+  response.status(204).end()
 })
 
 const PORT = 3001
