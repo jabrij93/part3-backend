@@ -1,6 +1,9 @@
 const express = require('express')
 const app = express()
 
+const cors = require('cors')
+
+app.use(cors())
 app.use(express.json())
 
 let notes = [
@@ -21,9 +24,9 @@ let notes = [
   }
 ]
 
-app.get('/', (request, response) => {
-  const notes2 = notes.map(note => note.content)
-  response.send(`${notes2}`)
+app.get('/api/notes', (request, response) => {
+  // const notes2 = notes.map(note => note.content)
+  response.json(notes)
 })
 
 app.get('/api/notes/:id', (request, response) => {
@@ -75,7 +78,7 @@ app.delete('/api/notes/:id', (request, response) => {
   response.status(204).end()
 })
 
-const PORT = 3002
+const PORT = 3001
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)
 })
