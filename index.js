@@ -1,5 +1,42 @@
 const express = require('express')
 const app = express()
+const mongoose = require('mongoose')
+
+const dotenv = require('dotenv')
+
+// Load environment variables from .env file
+dotenv.config();
+
+// MONGO DB
+if (process.argv.length<3) {
+  console.log('give password as argument')
+  process.exit(1)
+}
+
+const password = process.argv[2]
+
+// Replace placeholder with the actual password
+const url = process.env.MONGODB_URI.replace('<password>', password);
+
+mongoose.set('strictQuery',false)
+
+mongoose.connect(url)
+  .then(() => {
+    console.log('Connected to MongoDB');
+    // Start the server only after the connection is established
+    app.listen(3001, () => {
+      console.log('Server running on port 3001');
+    });
+  })
+
+const noteSchema = new mongoose.Schema({
+  content: String,
+  important: Boolean,
+})
+
+const Note = mongoose.model('Note', noteSchema)
+
+// MONGO DB
 
 const cors = require('cors')
 
@@ -7,33 +44,40 @@ app.use(cors())
 app.use(express.json())
 app.use(express.static('dist'))
 
-let notes = [
-  {
-    id: 1,
-    content: "HTML is easy",
-    important: true
-  },
-  {
-    id: 2,
-    content: "Browser can execute only JavaScript",
-    important: false
-  },
-  {
-    id: 3,
-    content: "GET and POST are the most important methods of HTTP protocol",
-    important: true
-  },
-  {
-    id: 4,
-    content: "TEST CONTENT",
-    important: true
-  }
-]
+// let notes = [
+//   {
+//     id: 1,
+//     content: "HTML is easy",
+//     important: true
+//   },
+//   {
+//     id: 2,
+//     content: "Browser can execute only JavaScript",
+//     important: false
+//   },
+//   {
+//     id: 3,
+//     content: "GET and POST are the most important methods of HTTP protocol",
+//     important: true
+//   },
+//   {
+//     id: 4,
+//     content: "TEST CONTENT",
+//     important: true
+//   }
+// ]
 
 app.get('/api/notes', (request, response) => {
+  Note.find({}).then(notes => {
+    response.json(notes);
+  }).catch(error => {
+    console.error('Error fetching notes:', error.message);
+    response.status(500).json({ error: 'Failed to fetch notes' });
+  });
+});
   // const notes2 = notes.map(note => note.content)
-  response.json(notes)
-})
+  // response.json(notes)
+
 
 app.get('/api/notes/:id', (request, response) => {
   const id = Number(request.params.id);
@@ -84,7 +128,7 @@ app.delete('/api/notes/:id', (request, response) => {
   response.status(204).end()
 })
 
-const PORT = process.env.PORT || 3001
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`)
-})
+// const PORT = process.env.PORT || 3001
+// app.listen(PORT, () => {
+//   console.log(`Server running on port ${PORT}`)
+// })
