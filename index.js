@@ -1,6 +1,7 @@
 const express = require('express')
 const app = express()
 const Note = require('./models/note')
+const mongoose = require('mongoose')
 const cors = require('cors')
 
 // MONGO DB
@@ -53,18 +54,41 @@ app.get('/api/notes', (request, response) => {
 
 
 app.get('/api/notes/:id', (request, response) => {
-  const id = Number(request.params.id);
-  const note = notes.find(note => {
-    console.log(note.id, typeof note.id, id, typeof id, note.id === id)
-    return note.id === id
-  })
- 
-  if (note) {
-    response.json(note)
-  } else {
-    response.statusMessage = "The following resources is not found"
-    response.status(404).end()
+  // Find notes by ID using MongoDB
+  const id = request.params.id;
+
+  // Check if the ID is a valid MongoDB ObjectId
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return response.status(400).json({ error: 'Invalid ID format' });
   }
+
+  // Find notes by ID using MongoDB
+  Note.findById(id)
+    .then(note => {
+      if (note) {
+        response.json(note);
+      } else {
+        response.status(404).json({ error: 'The following resource is not found' });
+      }
+    })
+    .catch(error => {
+      // Handle any other errors
+      response.status(500).json({ error: 'Internal server error' });
+    });
+
+  // Find notes by ID before MongoDB
+  // const id = Number(request.params.id);
+  // const note = notes.find(note => {
+  //   console.log(note.id, typeof note.id, id, typeof id, note.id === id)
+  //   return note.id === id
+  // })
+ 
+  // if (note) {
+  //   response.json(note)
+  // } else {
+  //   response.statusMessage = "The following resources is not found"
+  //   response.status(404).end()
+  // }
 })
 
 const generateId = () => {
