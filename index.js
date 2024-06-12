@@ -3,7 +3,6 @@ const app = express()
 const Note = require('./models/note')
 const cors = require('cors')
 
-
 // MONGO DB
 // MONGO DB
 // MONGO DB
@@ -83,14 +82,25 @@ app.post('/api/notes', (request, response) => {
     })
   }
 
-  const note = {
+  // Add new note when using MongoDB 
+  const note = new Note({
     content: body.content,
-    important: Boolean(body.important) || false,
-    id : generateId(),
-  }
+    important: Boolean(body.important) || false
+  })
 
-  notes = notes.concat(note)
-  response.json(note)
+  note.save().then(savedNote=> {
+    response.json(savedNote)
+  })
+
+  // Add new note before MongoDB 
+  // const note = {
+  //   content: body.content,
+  //   important: Boolean(body.important) || false,
+  //   id : generateId(),
+  // }
+
+  // notes = notes.concat(note)
+  // response.json(note)
 })
 
 app.delete('/api/notes/:id', (request, response) => {
