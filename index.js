@@ -22,9 +22,8 @@ mongoose.connect(url)
   .then(() => {
     console.log('Connected to MongoDB');
     // Start the server only after the connection is established
-    app.listen(3001, () => {
-      console.log('Server running on port 3001');
-    });
+  }).catch(error => {
+    console.log("error connecting to MongoDB", error.message)
   })
 
 const noteSchema = new mongoose.Schema({
@@ -136,7 +135,7 @@ app.delete('/api/notes/:id', (request, response) => {
   response.status(204).end()
 })
 
-// const PORT = process.env.PORT || 3001
-// app.listen(PORT, () => {
-//   console.log(`Server running on port ${PORT}`)
-// })
+const PORT = process.env.PORT || 3001
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`)
+})
