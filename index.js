@@ -7,12 +7,6 @@ const dotenv = require('dotenv')
 // Load environment variables from .env file
 dotenv.config();
 
-// MONGO DB
-if (process.argv.length<3) {
-  console.log('give password as argument')
-  process.exit(1)
-}
-
 const password = process.argv[2]
 
 // Replace placeholder with the actual password

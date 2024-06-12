@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
 
-import dotenv from 'dotenv';
+const dotenv = require('dotenv')
 
 // Load environment variables from .env file
 dotenv.config();
@@ -27,8 +27,8 @@ const noteSchema = new mongoose.Schema({
 const Note = mongoose.model('Note', noteSchema)
 
 const note = new Note({
-  content: 'HTML is easy',
-  important: true,
+  content: 'TEST with false',
+  important: false,
 })
 
 
