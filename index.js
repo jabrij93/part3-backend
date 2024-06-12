@@ -1,51 +1,18 @@
 const express = require('express')
 const app = express()
-const mongoose = require('mongoose')
-
-const dotenv = require('dotenv')
-
-// Load environment variables from .env file
-dotenv.config();
-
-
-// MONGO DB
-// MONGO DB
-// MONGO DB
-const password = process.argv[2]
-
-// Replace placeholder with the actual password
-const url = process.env.MONGODB_URI.replace('<password>', password);
-
-mongoose.set('strictQuery',false)
-
-mongoose.connect(url)
-  .then(() => {
-    console.log('Connected to MongoDB');
-    // Start the server only after the connection is established
-  }).catch(error => {
-    console.log("error connecting to MongoDB", error.message)
-  })
-
-const noteSchema = new mongoose.Schema({
-  content: String,
-  important: Boolean,
-})
-
-const Note = mongoose.model('Note', noteSchema)
-
-noteSchema.set('toJSON', {
-  transform: (document, returnedObject) => {
-    returnedObject.id = returnedObject._id.toString()
-    delete returnedObject._id
-    delete returnedObject.__v
-  }
-})
-
-// MONGO DB
-// MONGO DB
-// MONGO DB
-
+const Note = require('./models/note')
 const cors = require('cors')
+
+
+// MONGO DB
+// MONGO DB
+// MONGO DB
+
+// MONGO DB
+// MONGO DB
+// MONGO DB
+
+
 
 app.use(cors())
 app.use(express.json())
@@ -135,7 +102,7 @@ app.delete('/api/notes/:id', (request, response) => {
   response.status(204).end()
 })
 
-const PORT = process.env.PORT || 3001
+const PORT = process.env.PORT
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)
 })
