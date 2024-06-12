@@ -7,6 +7,10 @@ const dotenv = require('dotenv')
 // Load environment variables from .env file
 dotenv.config();
 
+
+// MONGO DB
+// MONGO DB
+// MONGO DB
 const password = process.argv[2]
 
 // Replace placeholder with the actual password
@@ -30,6 +34,16 @@ const noteSchema = new mongoose.Schema({
 
 const Note = mongoose.model('Note', noteSchema)
 
+noteSchema.set('toJSON', {
+  transform: (document, returnedObject) => {
+    returnedObject.id = returnedObject._id.toString()
+    delete returnedObject._id
+    delete returnedObject.__v
+  }
+})
+
+// MONGO DB
+// MONGO DB
 // MONGO DB
 
 const cors = require('cors')
