@@ -126,16 +126,30 @@ app.post('/api/notes', (request, response) => {
   // response.json(note)
 })
 
-app.delete('/api/notes/:id', (request, response) => {
-  const id = Number(request.params.id)
+app.delete('/api/notes/:id', (request, response, next) => {
+  // Delete person using MONGO DB
+  Note.findByIdAndDelete(request.params.id)
+    .then(result => {
+      response.status(204).end()
+    })
+    .catch(error => next(error))
 
-  // notes = notes.filter(note => note.id !== id)
-  notes = notes.find(note => note.id === id)
-
-  response.status(204).end()
+   // Delete person before MONGO DB
+   // const id = Number(request.params.id)
+   // notes = notes.filter(note => note.id !== id)
+   // notes = notes.find(note => note.id === id)
+   // response.status(204).end()
 })
 
 // Error handler middleware
+// Error handler middleware
+const unknownEndpoint = (request, response) => {
+  response.status(404).send({ error: 'unknown endpoint' })
+}
+
+// handler of requests with unknown endpoint
+app.use(unknownEndpoint)
+
 const errorHandler = (error, request, response, next) => {
   console.error(error.message)
 
@@ -145,6 +159,8 @@ const errorHandler = (error, request, response, next) => {
 
   next(error)
 }
+// Error handler middleware
+// Error handler middleware
 
 // this has to be the last loaded middleware, also all the routes should be registered before this!
 app.use(errorHandler)
