@@ -126,6 +126,21 @@ app.post('/api/notes', (request, response) => {
   // response.json(note)
 })
 
+app.put('/api/notes/:id', (request, response, next) => {
+  const body = request.body
+
+  const note = {
+    content: body.content,
+    important: body.important,
+  }
+
+  Note.findByIdAndUpdate(request.params.id, note, { new: true })
+    .then(updatedNote => {
+      response.json(updatedNote)
+    })
+    .catch(error => next(error))
+})
+
 app.delete('/api/notes/:id', (request, response, next) => {
   // Delete person using MONGO DB
   Note.findByIdAndDelete(request.params.id)
