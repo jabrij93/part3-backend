@@ -68,12 +68,13 @@ app.get('/api/notes/:id', (request, response) => {
       if (note) {
         response.json(note);
       } else {
-        response.status(404).json({ error: 'The following resource is not found' });
+        response.status(404).end()
       }
     })
     .catch(error => {
       // Handle any other errors
-      response.status(500).json({ error: 'Internal server error' });
+      console.log(error)
+      response.status(400).json({ error: 'Invalid ID format' });
     });
 
   // Find notes by ID before MongoDB
@@ -98,6 +99,7 @@ const generateId = () => {
 }
 
 app.post('/api/notes', (request, response) => {
+  // Add new note using MongoDB 
   const body = request.body
   
   if (!body.content) {
