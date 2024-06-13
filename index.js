@@ -13,7 +13,6 @@ const cors = require('cors')
 // MONGO DB
 
 
-
 app.use(cors())
 app.use(express.json())
 app.use(express.static('dist'))
@@ -53,14 +52,14 @@ app.get('/api/notes', (request, response) => {
   // response.json(notes)
 
 
-app.get('/api/notes/:id', (request, response) => {
+app.get('/api/notes/:id', (request, response, next) => {
   // Find notes by ID using MongoDB
   const id = request.params.id;
 
   // Check if the ID is a valid MongoDB ObjectId
-  if (!mongoose.Types.ObjectId.isValid(id)) {
-    return response.status(400).json({ error: 'Invalid ID format' });
-  }
+  // if (!mongoose.Types.ObjectId.isValid(id)) {
+  //   return response.status(400).json({ error: 'Invalid ID format' });
+  // }
 
   // Find notes by ID using MongoDB
   Note.findById(id)
@@ -71,11 +70,7 @@ app.get('/api/notes/:id', (request, response) => {
         response.status(404).end()
       }
     })
-    .catch(error => {
-      // Handle any other errors
-      console.log(error)
-      response.status(400).json({ error: 'Invalid ID format' });
-    });
+    .catch(error => next(error));
 
   // Find notes by ID before MongoDB
   // const id = Number(request.params.id);
@@ -91,6 +86,8 @@ app.get('/api/notes/:id', (request, response) => {
   //   response.status(404).end()
   // }
 })
+
+
 
 const generateId = () => {
   const maxId = notes.length > 0 ? 
@@ -137,6 +134,20 @@ app.delete('/api/notes/:id', (request, response) => {
 
   response.status(204).end()
 })
+
+// Error handler middleware
+const errorHandler = (error, request, response, next) => {
+  console.error(error.message)
+
+  if (error.name === 'CastError') {
+    return response.status(400).send({ error: 'malformatted id' })
+  } 
+
+  next(error)
+}
+
+// this has to be the last loaded middleware, also all the routes should be registered before this!
+app.use(errorHandler)
 
 const PORT = process.env.PORT
 app.listen(PORT, () => {
