@@ -95,7 +95,7 @@ const generateId = () => {
   return maxId + 1;
 }
 
-app.post('/api/notes', (request, response) => {
+app.post('/api/notes', (request, response, next) => {
   // Add new note using MongoDB 
   const body = request.body
   
@@ -113,7 +113,7 @@ app.post('/api/notes', (request, response) => {
 
   note.save().then(savedNote=> {
     response.json(savedNote)
-  })
+  }).catch(error =>next(error))
 
   // Add new note before MongoDB 
   // const note = {
