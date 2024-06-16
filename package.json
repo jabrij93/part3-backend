@@ -3,10 +3,10 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "type": "module",
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon index.js",
+    "lint": "eslint .",
     "test": "echo \"Error: no test specified\" && exit 1",
     "build:ui": "rm -rf dist && cd ../part2-notes-frontend && npm run build && cp -r dist ../part3-backend",
     "deploy:full": "npm run build:ui && git add . && git commit -m uibuild && git push"
@@ -23,7 +23,7 @@
   "devDependencies": {
     "@stylistic/eslint-plugin-js": "^2.2.0",
     "eslint": "^9.5.0",
-    "globals": "^15.4.0",
+    "globals": "^15.5.0",
     "nodemon": "^3.0.3"
   }
 }
