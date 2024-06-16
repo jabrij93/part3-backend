@@ -4,6 +4,8 @@ const stylisticJsPlugin = require('@stylistic/eslint-plugin-js');
 // Manually specify recommended rules (a simplified example)
 const recommendedRules = {
   // Add other recommended rules here
+  'no-unused-vars': 'error',
+  'no-undef': 'error',
   'eqeqeq': 'error',
   'no-trailing-spaces': 'error',
   'object-curly-spacing': ['error', 'always'],
