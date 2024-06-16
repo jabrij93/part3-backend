@@ -3,6 +3,8 @@ const app = express()
 const Note = require('./models/note')
 const config = require('./utils/config')
 
+const logger = require('./utils/logger')
+
 const mongoose = require('mongoose')
 const cors = require('cors')
 
@@ -46,6 +48,7 @@ app.get('/api/notes', (request, response) => {
   Note.find({}).then(notes => {
     response.json(notes);
   }).catch(error => {
+    logger.error('Error fetching notes:', error.message);
     console.error('Error fetching notes:', error.message);
     response.status(500).json({ error: 'Failed to fetch notes' });
   });
@@ -171,24 +174,13 @@ const unknownEndpoint = (request, response) => {
 // handler of requests with unknown endpoint
 app.use(unknownEndpoint)
 
-const errorHandler = (error, request, response, next) => {
-  console.error(error.message)
-
-  if (error.name === 'CastError') {
-    return response.status(400).send({ error: 'malformatted id' })
-  } else if (error.name === 'ValidationError') {
-    return response.status(400).json({ error: error.message })
-  }
-
-  next(error)
-}
-// Error handler middleware
-// Error handler middleware
-
 // this has to be the last loaded middleware, also all the routes should be registered before this!
-app.use(errorHandler)
+app.use(logger.error)
+
+// Error handler middleware
+// Error handler middleware
 
 
 app.listen(config.PORT, () => {
-  console.log(`Server running on port ${config.PORT}`)
+  logger.info(`Server running on port ${config.PORT}`)
 })
