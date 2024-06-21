@@ -1,14 +1,14 @@
 const notesRouter = require('express').Router()
 const Note = require('../models/note')
 
-notesRouter.get('/', (request, response) => {
-    Note.find({}).then(notes => {
-        response.json(notes);
-      }).catch(error => {
-        logger.error('Error fetching notes:', error.message);
-        console.error('Error fetching notes:', error.message);
-        response.status(500).json({ error: 'Failed to fetch notes' });
-      });
+notesRouter.get('/', async (request, response) => {
+  try {
+  const notes = await Note.find({})
+  response.json(notes);
+  } catch (error) {
+    console.error('Error fetching notes:', error);
+    response.status(500).json({ error: 'Internal Server Error' });
+  }
 })
 
 notesRouter.get('/:id', (request, response, next) => {
