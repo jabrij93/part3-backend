@@ -18,18 +18,25 @@ const initialNotes = [
     },
   ]
 
-  test('there are two notes', async () => {
+test.only('notes are returned as json', async () => {
+    await api
+      .get('/api/notes')
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+})
+
+test.only('there are two notes', async () => {
     const response = await api.get('/api/notes')
   
     assert.strictEqual(response.body.length, initialNotes.length)
-  })
+})
   
-  test('the first note is about HTTP methods', async () => {
+test('the first note is about HTTP methods', async () => {
     const response = await api.get('/api/notes')
   
     const contents = response.body.map(e => e.content)
     assert(contents.includes('HTML is easy'))
-  })
+})
 
 beforeEach(async () => {
     await Note.deleteMany({})
