@@ -16,4 +16,6 @@ describe('average', () => {
   test('of empty array is zero', () => {
     assert.strictEqual(average([]), 0)
   })
+
+  
 })
