@@ -28,14 +28,6 @@ beforeEach(async () => {
   await noteObject.save()
 })
 
-test('test data from test_helper', async () => {
-  const response = await api
-    .get('/api/notes')
-    .expect(200)
-    .expect('Content-Type', /application\/json/)
-
-  console.log(response.body)
-})
 
 test('test data from test_helper', async () => {
   console.log('Connecting to the database...');
@@ -74,6 +66,7 @@ test.only('a valid note can be added ', async () => {
     .expect(201)
     .expect('Content-Type', /application\/json/)
 
+  // Update code when adding new notes
   const notesAtEnd = await helper.notesInDb()
   assert.strictEqual(notesAtEnd.length, helper.initialNotes.length + 1)
 
