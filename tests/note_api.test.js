@@ -28,13 +28,19 @@ beforeEach(async () => {
   await noteObject.save()
 })
 
-test.only('test data from test_helper', async () => {
+test('test data from test_helper', async () => {
   const response = await api
     .get('/api/notes')
     .expect(200)
     .expect('Content-Type', /application\/json/)
 
   console.log(response.body)
+})
+
+test('test data from test_helper', async () => {
+  console.log('Connecting to the database...');
+  const data = await helper.notesInDb();
+  console.log('Data fetched from database:', data);
 })
 
 test('notes are returned as json', async () => {
@@ -56,7 +62,7 @@ test('the first note is about HTTP methods', async () => {
     assert(contents.includes('HTML is easy'))
 })
 
-test('a valid note can be added ', async () => {
+test.only('a valid note can be added ', async () => {
   const newNote = {
     content: 'async/await simplifies making async calls',
     important: true,
@@ -68,12 +74,10 @@ test('a valid note can be added ', async () => {
     .expect(201)
     .expect('Content-Type', /application\/json/)
 
-  const response = await api.get('/api/notes')
+  const notesAtEnd = await helper.notesInDb()
+  assert.strictEqual(notesAtEnd.length, helper.initialNotes.length + 1)
 
-  const contents = response.body.map(r => r.content)
-
-  assert.strictEqual(response.body.length, helper.initialNotes.length + 1)
-
+  const contents = notesAtEnd.map(r => r.content)
   assert(contents.includes('async/await simplifies making async calls'))
 })
 
