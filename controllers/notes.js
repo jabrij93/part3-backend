@@ -11,7 +11,7 @@ notesRouter.get('/', async (request, response) => {
   }
 })
 
-notesRouter.get('/:id', (request, response, next) => {
+notesRouter.get('/:id', async (request, response, next) => {
   // Find notes by ID using MongoDB
   const id = request.params.id;
 
@@ -21,15 +21,16 @@ notesRouter.get('/:id', (request, response, next) => {
   // }
 
   // Find notes by ID using MongoDB
-  Note.findById(id)
-    .then(note => {
-      if (note) {
-        response.json(note);
-      } else {
-        response.status(404).end()
-      }
-    })
-    .catch(error => next(error));
+  try {
+    const note = await Note.findById(id)
+    if (note) {
+      response.json(note)
+    } else {
+      response.status(404).end()
+    }
+  } catch(exception) {
+    next(exception)
+  }
 })
 
 notesRouter.post('/', async (request, response, next) => {
@@ -56,13 +57,14 @@ notesRouter.post('/', async (request, response, next) => {
   }
 })
 
-notesRouter.delete('/:id', (request, response, next) => {
+notesRouter.delete('/:id', async (request, response, next) => {
+  try {
   // Delete person using MONGO DB
-  Note.findByIdAndDelete(request.params.id)
-    .then(result => {
+    await Note.findByIdAndDelete(request.params.id)
       response.status(204).end()
-    })
-    .catch(error => next(error))
+  } catch(exception) {
+    next(exception)
+  }
 })
 
 notesRouter.put('/:id', (request, response, next) => {
