@@ -54,7 +54,7 @@ test('the first note is about HTTP methods', async () => {
     assert(contents.includes('HTML is easy'))
 })
 
-test.only('a valid note can be added ', async () => {
+test('a valid note can be added ', async () => {
   const newNote = {
     content: 'async/await simplifies making async calls',
     important: true,
@@ -74,7 +74,7 @@ test.only('a valid note can be added ', async () => {
   assert(contents.includes('async/await simplifies making async calls'))
 })
 
-test('note without content is not added', async () => {
+test.only('note without content is not added', async () => {
   const newNote = {
     important: true
   }
@@ -84,9 +84,9 @@ test('note without content is not added', async () => {
     .send(newNote)
     .expect(400)
 
-  const response = await api.get('/api/notes')
+  const notesAtEnd = await helper.notesInDb();
 
-  assert.strictEqual(response.body.length, helper.initialNotes.length)
+  assert.strictEqual(notesAtEnd.length, helper.initialNotes.length)
 })
 
 after(async () => {
