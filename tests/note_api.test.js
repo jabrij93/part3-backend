@@ -32,7 +32,9 @@ beforeEach(async () => {
 test('test data from test_helper', async () => {
   console.log('Connecting to the database...');
   const data = await helper.notesInDb();
-  console.log('Data fetched from database:', data);
+  // Access the second and third entries
+  const secondAndThirdData = data.slice(1);
+  console.log(secondAndThirdData);
 })
 
 test('notes are returned as json', async () => {
@@ -54,7 +56,7 @@ test('the first note is about HTTP methods', async () => {
     assert(contents.includes('HTML is easy'))
 })
 
-test.only('a valid note can be added ', async () => {
+test('a valid note can be added ', async () => {
   const newNote = {
     content: 'async/await simplifies making async calls',
     important: true,
@@ -74,7 +76,7 @@ test.only('a valid note can be added ', async () => {
   assert(contents.includes('async/await simplifies making async calls'))
 })
 
-test.only('note without content is not added', async () => {
+test('note without content is not added', async () => {
   const newNote = {
     important: true
   }
@@ -87,6 +89,20 @@ test.only('note without content is not added', async () => {
   const notesAtEnd = await helper.notesInDb();
 
   assert.strictEqual(notesAtEnd.length, helper.initialNotes.length)
+})
+
+test.only('a specific note can be viewed', async () => {
+  const notesAtStart = await helper.notesInDb()
+
+  const noteToView = notesAtStart[0]
+  console.log("noteToView", noteToView)
+
+  const resultNote = await api
+    .get(`/api/notes/${noteToView.id}`)
+    .expect(200)
+    .expect('Content-Type', /application\/json/)
+
+  assert.deepStrictEqual(resultNote.body, noteToView)
 })
 
 after(async () => {
