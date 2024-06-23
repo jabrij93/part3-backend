@@ -8,6 +8,10 @@ const initialNotes = [
   {
     content: 'Browser can execute only JavaScript',
     important: true
+  },
+  {
+    content: 'testtt',
+    important: false
   }
 ]
 

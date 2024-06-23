@@ -24,6 +24,17 @@ beforeEach(async () => {
   await noteObject.save()
   noteObject = new Note(helper.initialNotes[1])
   await noteObject.save()
+  noteObject = new Note(helper.initialNotes[2])
+  await noteObject.save()
+})
+
+test.only('test data from test_helper', async () => {
+  const response = await api
+    .get('/api/notes')
+    .expect(200)
+    .expect('Content-Type', /application\/json/)
+
+  console.log(response.body)
 })
 
 test('notes are returned as json', async () => {
@@ -66,7 +77,7 @@ test('a valid note can be added ', async () => {
   assert(contents.includes('async/await simplifies making async calls'))
 })
 
-test.only('note without content is not added', async () => {
+test('note without content is not added', async () => {
   const newNote = {
     important: true
   }
