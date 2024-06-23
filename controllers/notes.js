@@ -32,7 +32,7 @@ notesRouter.get('/:id', (request, response, next) => {
     .catch(error => next(error));
 })
 
-notesRouter.post('/', (request, response, next) => {
+notesRouter.post('/', async (request, response, next) => {
   // Add new note using MongoDB 
   const body = request.body
   
@@ -48,9 +48,12 @@ notesRouter.post('/', (request, response, next) => {
     important: Boolean(body.important) || false
   })
 
-  note.save().then(savedNote=> {
+  try {
+    const savedNote = await note.save()
     response.status(201).json(savedNote)
-  }).catch(error =>next(error))
+  } catch(exception) {
+    next(exception)
+  }
 })
 
 notesRouter.delete('/:id', (request, response, next) => {
