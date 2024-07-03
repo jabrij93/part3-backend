@@ -2,13 +2,8 @@ const notesRouter = require('express').Router()
 const Note = require('../models/note')
 
 notesRouter.get('/', async (request, response) => {
-  try {
   const notes = await Note.find({})
-  response.json(notes);
-  } catch (error) {
-    console.error('Error fetching notes:', error);
-    response.status(500).json({ error: 'Internal Server Error' });
-  }
+  response.json(notes)
 })
 
 notesRouter.get('/:id', async (request, response, next) => {
@@ -21,16 +16,12 @@ notesRouter.get('/:id', async (request, response, next) => {
   // }
 
   // Find notes by ID using MongoDB
-  try {
     const note = await Note.findById(id)
     if (note) {
       response.json(note)
     } else {
       response.status(404).end()
     }
-  } catch(exception) {
-    next(exception)
-  }
 })
 
 notesRouter.post('/', async (request, response, next) => {
@@ -49,22 +40,14 @@ notesRouter.post('/', async (request, response, next) => {
     important: Boolean(body.important) || false
   })
 
-  try {
-    const savedNote = await note.save()
-    response.status(201).json(savedNote)
-  } catch(exception) {
-    next(exception)
-  }
+  const savedNote = await note.save()
+  response.status(201).json(savedNote)
 })
 
-notesRouter.delete('/:id', async (request, response, next) => {
-  try {
+notesRouter.delete('/:id', async (request, response) => {
   // Delete person using MONGO DB
     await Note.findByIdAndDelete(request.params.id)
       response.status(204).end()
-  } catch(exception) {
-    next(exception)
-  }
 })
 
 notesRouter.put('/:id', (request, response, next) => {
