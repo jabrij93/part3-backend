@@ -20,25 +20,26 @@ const api = supertest(app)
 
 beforeEach(async () => {
   await Note.deleteMany({})
-  let noteObject = new Note(helper.initialNotes[0])
-  await noteObject.save()
-  noteObject = new Note(helper.initialNotes[1])
-  await noteObject.save()
-  noteObject = new Note(helper.initialNotes[2])
-  await noteObject.save()
+
+  const noteObjects = helper.initialNotes
+    .map(note => new Note(note))
+  const promiseArray = noteObjects.map(note => note.save())
+  await Promise.all(promiseArray)
+
+  console.log('Promise Array', promiseArray)
 })
 
 
-test('test data from test_helper', async () => {
-  console.log('Connecting to the database...');
-  const data = await helper.notesInDb();
-  // Access the second and third entries
-  const secondAndThirdData = data.slice(1);
-  console.log(secondAndThirdData);
-})
+// test('test data from test_helper', async () => {
+//   console.log('Connecting to the database...');
+//   const data = await helper.notesInDb();
+  
+//   console.log('DB info:', data);
+// })
 
-test('notes are returned as json', async () => {
-    await api
+test.only('notes are returned as json', async () => {
+  console.log('entered test')
+    // await api
       .get('/api/notes')
       .expect(200)
       .expect('Content-Type', /application\/json/)
@@ -105,7 +106,7 @@ test('a specific note can be viewed', async () => {
   assert.deepStrictEqual(resultNote.body, noteToView)
 })
 
-test.only('a note can be deleted', async () => {
+test('a note can be deleted', async () => {
   const notesAtStart = await helper.notesInDb()
   const noteToDelete = notesAtStart[0]
 
