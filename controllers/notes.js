@@ -1,5 +1,6 @@
 const notesRouter = require('express').Router()
 const Note = require('../models/note')
+const User = require('../models/user')
 
 notesRouter.get('/', async (request, response) => {
   const notes = await Note.find({})
@@ -27,6 +28,11 @@ notesRouter.get('/:id', async (request, response, next) => {
 notesRouter.post('/', async (request, response, next) => {
   // Add new note using MongoDB 
   const body = request.body
+  console.log("INSPECT body", body)
+
+  
+  const user = await User.findById(body.userId)
+  console.log("INSPECT user", user)
   
   if (!body.content) {
     return response.status(400).json({
@@ -37,10 +43,14 @@ notesRouter.post('/', async (request, response, next) => {
   // Add new note when using MongoDB 
   const note = new Note({
     content: body.content,
-    important: Boolean(body.important) || false
+    important: body.important === undefined ? false : body.important,
+    user: user.id
   })
 
   const savedNote = await note.save()
+  user.notes = user.notes.concat(savedNote._id)
+  await user.save()
+
   response.status(201).json(savedNote)
 })
 
