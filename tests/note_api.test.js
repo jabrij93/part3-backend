@@ -164,6 +164,5 @@ describe('when there is initially some notes saved', () => {
 })
 
 after(async () => {
-  await User.deleteMany({})
   await mongoose.connection.close()
 })
