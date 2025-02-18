@@ -1,5 +1,5 @@
-const globals = require('globals');
-const stylisticJsPlugin = require('@stylistic/eslint-plugin-js');
+const globals = require('globals')
+const stylisticJsPlugin = require('@stylistic/eslint-plugin-js')
 
 // Manually specify recommended rules (a simplified example)
 const recommendedRules = {
@@ -13,15 +13,17 @@ const recommendedRules = {
   'no-console': 0,
   'react/react-in-jsx-scope': 'off',
   'react/prop-types': 0
-};
+}
 
 module.exports = [
   {
-    files: ["**/*.js"],
+    files: ['**/*.js'],
     languageOptions: {
-      sourceType: "commonjs",
-      globals: globals.browser,
-    },
+      sourceType: 'commonjs',
+      globals: { 
+        ...globals.browser,
+        ...globals.node,
+      },
     plugins: {
       '@stylistic/js': stylisticJsPlugin,
     },
@@ -33,4 +35,5 @@ module.exports = [
       '@stylistic/js/semi': ['error', 'never'],
     },
   },
-];
+  }
+]
